@@ -10,12 +10,12 @@ use crate::domain::repository::member_repository::MemberRepository;
 //   dyn  = 動的ディスパッチ。実装型を知らなくてもトレイト経由で呼び出せる
 //          → テスト時にモック実装に差し替えられる (Java の @MockBean に相当)
 #[derive(Debug, Clone)]
-pub(crate) struct MemberService {
+pub struct MemberService {
     member_repository: Arc<dyn MemberRepository>,
 }
 
 impl MemberService {
-    pub(crate) fn new(member_repository: Arc<dyn MemberRepository>) -> Self {
+    pub fn new(member_repository: Arc<dyn MemberRepository>) -> Self {
         Self { member_repository }
     }
 
@@ -23,15 +23,12 @@ impl MemberService {
     //   skip(self): self は Debug ログから除外 (うるさいので)
     //   err: エラー時に Err の中身もログに出す
     #[tracing::instrument(skip(self), err)]
-    pub(crate) async fn search(
-        &self,
-        condition: MemberSearchCondition,
-    ) -> anyhow::Result<Vec<Member>> {
+    pub async fn search(&self, condition: MemberSearchCondition) -> anyhow::Result<Vec<Member>> {
         self.member_repository.search(condition).await
     }
 
     #[tracing::instrument(skip(self), err)]
-    pub(crate) async fn count(&self) -> anyhow::Result<Count> {
+    pub async fn count(&self) -> anyhow::Result<Count> {
         self.member_repository.count().await
     }
 }

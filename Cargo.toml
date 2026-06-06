@@ -87,9 +87,8 @@ expect_used = "warn"        # .expect() も同様
 todo = "warn"               # todo!() マクロ残し忘れ防止
 dbg_macro = "warn"          # dbg!() マクロ残し忘れ防止
 
-# pedantic / nursery に含まれるが実用上うるさい lint を個別に allow
+# pedantic に含まれるが実用上うるさい lint を個別に allow
 module_name_repetitions = "allow"   # foo::FooBar 命名を許可
 missing_errors_doc = "allow"        # /// # Errors セクション要求
 missing_panics_doc = "allow"        # /// # Panics セクション要求
 must_use_candidate = "allow"        # #[must_use] 推奨要求
-redundant_pub_crate = "allow"       # private module 内の pub(crate) を許可 (意図明示として残す)

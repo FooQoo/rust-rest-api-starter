@@ -12,7 +12,7 @@ use thiserror::Error;
 //
 // Java では @ExceptionHandler や @ControllerAdvice でやる処理に相当する。
 #[derive(Debug, Error)]
-pub(crate) enum AppError {
+pub enum AppError {
     // anyhow::Error からの自動変換を提供
     // ? 演算子で anyhow::Error → AppError へ変換される
     #[error("internal error: {0}")]

@@ -9,12 +9,12 @@ use crate::infrastructure::db::entity::member_entity::MemberRow;
 
 // Java の MemberRepositoryImpl.java 相当
 #[derive(Debug)]
-pub(crate) struct SqliteMemberRepository {
+pub struct SqliteMemberRepository {
     pool: Arc<SqlitePool>,
 }
 
 impl SqliteMemberRepository {
-    pub(crate) const fn new(pool: Arc<SqlitePool>) -> Self {
+    pub const fn new(pool: Arc<SqlitePool>) -> Self {
         Self { pool }
     }
 }

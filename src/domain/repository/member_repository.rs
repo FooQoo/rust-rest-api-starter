@@ -17,7 +17,7 @@ use crate::domain::model::{Count, Member, MemberSearchCondition};
 // 内部の Arc<dyn MemberRepository> が Debug でないとビルドが通らない。
 // trait 自体に Debug 境界を要求しておけば、impl 側で derive(Debug) するだけで OK。
 #[async_trait]
-pub(crate) trait MemberRepository: Send + Sync + std::fmt::Debug {
+pub trait MemberRepository: Send + Sync + std::fmt::Debug {
     async fn search(&self, condition: MemberSearchCondition) -> anyhow::Result<Vec<Member>>;
     async fn count(&self) -> anyhow::Result<Count>;
 }

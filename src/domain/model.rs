@@ -8,20 +8,20 @@
 // #[allow(dead_code)] で「未使用警告」を抑制 (将来 ID を使う API が増えたら外す)
 // ─────────────────────────────────────────────
 #[derive(Debug, Clone)]
-pub(crate) struct CompanyPosition {
+pub struct CompanyPosition {
     #[allow(dead_code)]
-    pub(crate) company_position_id: i32,
-    pub(crate) name: String,
+    pub company_position_id: i32,
+    pub name: String,
 }
 
 // ─────────────────────────────────────────────
 // 社員
 // ─────────────────────────────────────────────
 #[derive(Debug, Clone)]
-pub(crate) struct Member {
-    pub(crate) id: i32,
-    pub(crate) name: String,
-    pub(crate) company_position: CompanyPosition,
+pub struct Member {
+    pub id: i32,
+    pub name: String,
+    pub company_position: CompanyPosition,
 }
 
 // ─────────────────────────────────────────────
@@ -30,29 +30,29 @@ pub(crate) struct Member {
 // 「全部 None (条件なし)」のインスタンスが作れる。
 // ─────────────────────────────────────────────
 #[derive(Debug, Clone, Default)]
-pub(crate) struct MemberSearchCondition {
-    pub(crate) name: Option<String>,
-    pub(crate) company_position_id: Option<i32>,
+pub struct MemberSearchCondition {
+    pub name: Option<String>,
+    pub company_position_id: Option<i32>,
 }
 
 // ─────────────────────────────────────────────
 // Newtype による Value Object: u32 で非負を保証
 // ─────────────────────────────────────────────
 #[derive(Debug, Clone, Copy, PartialEq, Eq)]
-pub(crate) struct Count(u32);
+pub struct Count(u32);
 
 impl Count {
     // i64 → u32 変換 (負数や u32 範囲超えは弾く)
     // must_use: 生成した Count を使わずに捨てると警告が出る
     #[must_use = "Count::new returns a Result that must be handled"]
-    pub(crate) fn new(value: i64) -> anyhow::Result<Self> {
+    pub fn new(value: i64) -> anyhow::Result<Self> {
         let value: u32 = value.try_into()?;
         Ok(Self(value))
     }
 
     // 値渡し (self) を採用。Copy 型なので呼び出し側は元の Count を再利用できる。
     // u32 は 4 byte で参照より値渡しの方が効率的 (clippy::trivially_copy_pass_by_ref)
-    pub(crate) const fn value(self) -> u32 {
+    pub const fn value(self) -> u32 {
         self.0
     }
 }
