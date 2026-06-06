@@ -54,6 +54,10 @@ dotenvy = "0.15"
 # これにより .cargo-husky/hooks/ の内容が完全に制御下に入る。
 cargo-husky = { version = "1", default-features = false, features = ["user-hooks"] }
 
+# trait のモック自動生成 (Java の Mockito 相当)
+# #[cfg_attr(test, automock)] でテスト時のみ Mock 型を自動生成する
+mockall = "0.13"
+
 # ────────────────────────────────────────────────────────────────────
 # Lint 設定 (Rust 1.74+ で導入された [lints] セクション)
 #
