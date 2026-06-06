@@ -66,9 +66,10 @@ fmt-check:
 lint:
     cargo clippy --all-targets -- -D warnings
 
-# テスト
+# テスト (cargo-nextest を使用: プロセス隔離 + 出力が簡潔)
+# Note: nextest は doctest 非対応。doctest を書いたら `cargo test --doc` を別途
 test:
-    cargo test
+    cargo nextest run
 
 # 一括チェック: fmt-check → lint → test (pre-commit と同じ)
 check: fmt-check lint test
