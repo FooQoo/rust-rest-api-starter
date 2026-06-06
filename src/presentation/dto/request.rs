@@ -1,16 +1,19 @@
 use serde::Deserialize;
+use utoipa::IntoParams;
 
 use crate::domain::model::MemberSearchCondition;
 
 // ─────────────────────────────────────────────
 // 社員検索リクエスト
 // ─────────────────────────────────────────────
-#[derive(Debug, Deserialize)]
+// IntoParams: クエリ/パスパラメータの OpenAPI schema を自動生成。
+// (JSON ボディの場合は ToSchema を使う)
+#[derive(Debug, Deserialize, IntoParams)]
 pub struct MemberSearchRequest {
-    // 必須。パラメータ未指定なら axum が 422 を自動返却
+    /// 社員名 (完全一致)
     pub name: String,
 
-    // optional。Option<i32>: 未指定なら None、指定なら Some(値)
+    /// 部署 ID で絞り込み (任意)
     pub company_position_id: Option<i32>,
 }
 

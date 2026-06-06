@@ -1,14 +1,19 @@
 use serde::Serialize;
+use utoipa::ToSchema;
 
 use crate::domain::model::{Count, Member};
 
 // ─────────────────────────────────────────────
 // 1 件の社員レスポンス
 // ─────────────────────────────────────────────
-#[derive(Debug, Serialize)]
+// ToSchema: JSON ボディの OpenAPI schema を自動生成。
+#[derive(Debug, Serialize, ToSchema)]
 pub struct MemberResponse {
+    /// 社員 ID
     pub id: i32,
+    /// 社員名
     pub name: String,
+    /// 役職名
     pub position_name: String,
 }
 
@@ -25,8 +30,9 @@ impl From<Member> for MemberResponse {
 // ─────────────────────────────────────────────
 // 社員リストレスポンス
 // ─────────────────────────────────────────────
-#[derive(Debug, Serialize)]
+#[derive(Debug, Serialize, ToSchema)]
 pub struct MemberListResponse {
+    /// 社員リスト
     pub members: Vec<MemberResponse>,
 }
 
@@ -41,8 +47,9 @@ impl From<Vec<Member>> for MemberListResponse {
 // ─────────────────────────────────────────────
 // 社員数レスポンス
 // ─────────────────────────────────────────────
-#[derive(Debug, Serialize)]
+#[derive(Debug, Serialize, ToSchema)]
 pub struct MemberCountResponse {
+    /// 社員数
     pub count: u32,
 }
 

@@ -5,6 +5,8 @@ use axum::{routing::get, Router};
 use sqlx::sqlite::{SqliteConnectOptions, SqlitePoolOptions};
 use std::str::FromStr;
 use tower_http::{cors::CorsLayer, trace::TraceLayer};
+use utoipa::OpenApi;
+use utoipa_swagger_ui::SwaggerUi;
 
 mod application;
 mod domain;
@@ -14,7 +16,34 @@ mod presentation;
 
 use application::service::member_service::MemberService;
 use infrastructure::db::repository::member_repository_impl::SqliteMemberRepository;
+use presentation::dto::response::{MemberCountResponse, MemberListResponse, MemberResponse};
 use presentation::handler::member_handler;
+
+// OpenAPI ドキュメント定義 (Java の @OpenAPIDefinition 相当)
+// paths: ハンドラ関数を列挙 → #[utoipa::path] からドキュメントが集約される
+// components.schemas: JSON ボディに使う型を列挙 → ToSchema からスキーマが集約される
+// tags: API のグループ化 (Swagger UI で見出しになる)
+#[derive(OpenApi)]
+#[openapi(
+    info(
+        title = "rust-rest-api-starter",
+        version = "0.1.0",
+        description = "Rust の学習用 REST API スターター (axum + sqlx + SQLite)",
+    ),
+    paths(
+        member_handler::count,
+        member_handler::search,
+    ),
+    components(schemas(
+        MemberResponse,
+        MemberListResponse,
+        MemberCountResponse,
+    )),
+    tags(
+        (name = "member", description = "社員 API"),
+    )
+)]
+struct ApiDoc;
 
 // axum のルーターに渡す共有状態
 // Java の ApplicationContext (Spring DI コンテナ) が管理する Bean 群に相当する
@@ -77,9 +106,12 @@ async fn main() -> anyhow::Result<()> {
     let state = AppState { member_service };
 
     // ルーティング定義 (Spring の @RequestMapping に相当)
+    // .merge(SwaggerUi::...) で /swagger-ui に Swagger UI を、
+    // /api-docs/openapi.json に OpenAPI 文書を配信する。
     let app = Router::new()
         .route("/v1/member/count", get(member_handler::count))
         .route("/v1/member/search", get(member_handler::search))
+        .merge(SwaggerUi::new("/swagger-ui").url("/api-docs/openapi.json", ApiDoc::openapi()))
         .layer(CorsLayer::permissive())
         .layer(TraceLayer::new_for_http())
         .with_state(state);

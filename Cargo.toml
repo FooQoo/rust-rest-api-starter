@@ -39,6 +39,14 @@ async-trait = "0.1"
 # .env ファイル読み込み
 dotenvy = "0.15"
 
+# OpenAPI ドキュメントの自動生成 (Java の springdoc-openapi 相当)
+# - utoipa: 本体 (#[derive(ToSchema)], #[utoipa::path] マクロ)
+# - utoipa-axum: axum との統合
+# - utoipa-swagger-ui: Swagger UI を /swagger-ui で配信
+utoipa = { version = "5", features = ["axum_extras"] }
+utoipa-axum = "0.2"
+utoipa-swagger-ui = { version = "9", features = ["axum"] }
+
 # ────────────────────────────────────────────────────────────────────
 # dev-dependencies: 開発時のみ必要な依存
 # 本番ビルド (cargo build --release) には含まれない
