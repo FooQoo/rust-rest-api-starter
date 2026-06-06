@@ -1,9 +1,6 @@
 # rust-rest-api-starter
 
 Rust の学習用 REST API スターター。
-`../rest-starter` (Java / Spring Boot) を参考に、同等のレイヤードアーキテクチャを Rust で実装しています。
-
-参考記事: [一休レストランの Rust バックエンド構成](https://user-first.ikyu.co.jp/entry/2023/12/25/132215)
 
 ## 技術スタック
 
@@ -21,7 +18,6 @@ Rust の学習用 REST API スターター。
 
 ## アーキテクチャ
 
-Java 版と同じ4層構造です。
 
 ```
 src/
@@ -49,16 +45,6 @@ src/
 
 依存方向: `presentation → application → domain ← infrastructure`
 ドメイン層は外側に依存しないクリーンアーキテクチャの構成です。
-
-## セットアップ
-
-### Rust のパス
-
-```bash
-export PATH="/Users/satoshifukuyama/dev/other/goose/bin:$PATH"
-```
-
-(hermit 経由で入っているので、必要に応じて `.zshrc` に追加)
 
 ### ビルド
 
@@ -154,11 +140,3 @@ member           (member_id, name, company_position_id)
 | `@PathVariable` | `Path<T>` extractor |
 | `@Autowired` の Bean | `State<T>` extractor |
 | `@ExceptionHandler` | `IntoResponse` impl |
-
-## 進行中のタスク
-
-- [ ] `POST /v1/member` (社員追加) — 自分で書く
-
-## ライセンス
-
-学習目的のため未指定。

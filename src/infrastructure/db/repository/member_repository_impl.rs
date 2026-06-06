@@ -44,7 +44,8 @@ impl MemberRepository for SqliteMemberRepository {
 
         let rows: Vec<MemberRow> = qb
             .build_query_as::<MemberRow>()
-            .fetch_all(&*self.pool)
+            // &*self.poolでも良い。デリファンス -> 借用
+            .fetch_all(self.pool.as_ref())
             .await?;
 
         // DB の行 (MemberRow) → ドメインモデル (Member) への変換
@@ -67,7 +68,8 @@ impl MemberRepository for SqliteMemberRepository {
     async fn count(&self) -> anyhow::Result<Count> {
         // query_as でタプル型にマッピングする最もシンプルな COUNT 取得方法
         let (value,): (i64,) = sqlx::query_as("SELECT COUNT(*) FROM member")
-            .fetch_one(&*self.pool)
+            // &*self.poolでも良い。デリファンス -> 借用
+            .fetch_one(self.pool.as_ref())
             .await?;
 
         Ok(Count { value })
