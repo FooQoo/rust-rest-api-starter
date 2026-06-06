@@ -7,8 +7,8 @@
     "Rust": {
       // 保存時に rustfmt を自動実行
       // rust-analyzer 経由で cargo fmt が呼ばれる
-      "format_on_save": "on"
-    }
+      "format_on_save": "on",
+    },
   },
 
   "lsp": {
@@ -17,23 +17,23 @@
         // 保存時のチェックコマンドを cargo check → cargo clippy に変更
         // これで保存するたびに clippy 警告がエディタ上に表示される
         "check": {
-          "command": "clippy"
+          "command": "clippy",
         },
         // インレイヒント (型推論結果などをグレーで表示) を有効化
         // Rust 学習中は型の流れを追いやすくなる
         "inlayHints": {
           "bindingModeHints": {
-            "enable": true
+            "enable": true,
           },
           "closureReturnTypeHints": {
-            "enable": "always"
+            "enable": "always",
           },
           "lifetimeElisionHints": {
             "enable": "skip_trivial",
-            "useParameterNames": true
-          }
-        }
-      }
-    }
-  }
+            "useParameterNames": true,
+          },
+        },
+      },
+    },
+  },
 }
