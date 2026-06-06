@@ -1,0 +1,23 @@
+#!/bin/sh
+# Pre-commit hook (cargo-husky 経由でセットアップされる)
+# git commit を実行すると、コミットが作られる前にこのスクリプトが走る。
+# 終了コードが 0 以外ならコミットは中止される。
+
+set -e   # コマンドが1つでも失敗したら即座に終了
+
+# Git hook は新しいシェルで起動するため、ユーザーの .zshrc / .bashrc が読まれない。
+# rustup の cargo を PATH に通すため、明示的に env ファイルを source する。
+# (GUI Git クライアントや IDE からのコミットでも動くようにするため重要)
+. "$HOME/.cargo/env" 2>/dev/null || true
+
+echo "[pre-commit] cargo fmt --check"
+# --check: 差分があれば exit 1 (実際の書き換えはしない)
+# ローカルで手動修正させることで、フォーマット崩れをコミットさせない
+cargo fmt --check
+
+echo "[pre-commit] cargo clippy --all-targets -- -D warnings"
+# --all-targets: bin / lib / tests / examples を全部チェック
+# -D warnings:   警告を全てエラー扱いに昇格 (1つでもあれば exit 1)
+cargo clippy --all-targets -- -D warnings
+
+echo "[pre-commit] OK"

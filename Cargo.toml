@@ -1,0 +1,91 @@
+[package]
+name = "rust-rest-api-starter"
+version = "0.1.0"
+edition = "2021"
+
+[dependencies]
+# Web framework (Spring WebFlux 相当)
+axum = "0.8"
+
+# 非同期ランタイム (Reactor 相当)
+tokio = { version = "1", features = ["full"] }
+
+# SQLite 非同期ドライバ
+# - runtime-tokio-rustls: tokio ランタイム + TLS (TLS 使わなくても必須)
+# - sqlite: SQLite ドライバを有効化
+# - migrate: sqlx::migrate! マクロでスキーマ適用を行うために必要
+sqlx = { version = "0.8", features = ["runtime-tokio-rustls", "sqlite", "migrate"] }
+
+# JSON シリアライズ (Jackson 相当)
+serde = { version = "1", features = ["derive"] }
+serde_json = "1"
+
+# エラーハンドリング (ブログ記事でも採用)
+anyhow = "1"
+
+# HTTP ミドルウェア (CORS, ログ)
+tower-http = { version = "0.6", features = ["cors", "trace"] }
+
+# ログ (SLF4J / Logback 相当)
+tracing = "0.1"
+tracing-subscriber = { version = "0.3", features = ["env-filter"] }
+
+# async fn in trait を dyn Trait で使うために必要
+async-trait = "0.1"
+
+# .env ファイル読み込み
+dotenvy = "0.15"
+
+# ────────────────────────────────────────────────────────────────────
+# dev-dependencies: 開発時のみ必要な依存
+# 本番ビルド (cargo build --release) には含まれない
+# ────────────────────────────────────────────────────────────────────
+[dev-dependencies]
+
+# Git hooks のセットアップを自動化する
+# cargo test が初回実行された時に .cargo-husky/hooks/ の中身が
+# .git/hooks/ にコピーされる仕組み。
+#
+# default-features = false で「組み込みフック」を無効化し、
+# features = ["user-hooks"] で「ユーザー定義フック」だけを使う。
+# これにより .cargo-husky/hooks/ の内容が完全に制御下に入る。
+cargo-husky = { version = "1", default-features = false, features = ["user-hooks"] }
+
+# ────────────────────────────────────────────────────────────────────
+# Lint 設定 (Rust 1.74+ で導入された [lints] セクション)
+#
+# 従来は src/main.rs の先頭に #![warn(...)] を書いていたが、
+# Cargo.toml で一元管理する方が現代のベストプラクティス。
+#
+# priority = -1 はグループ全体を一段優先度を下げる指定。
+# これにより「グループは warn だが個別に allow」が書ける。
+# ────────────────────────────────────────────────────────────────────
+[lints.rust]
+# unsafe ブロック禁止 (学習中は触らない方が安全)
+unsafe_code = "forbid"
+
+[lints.clippy]
+# 基本群: correctness / suspicious / style / complexity / perf
+# デフォルトでも warn だが明示的に書いておく
+all = { level = "warn", priority = -1 }
+
+# より厳しい lint 群 (opt-in)
+# Rust らしい書き方を学ぶのに最適。最初はうるさいが慣れる価値あり
+pedantic = { level = "warn", priority = -1 }
+
+# 実験的 lint。たまに誤検知あるので nursery は warn 止まりで
+nursery = { level = "warn", priority = -1 }
+
+# restriction カテゴリは個別に選んで有効化する
+# (グループ全体を有効化するのは非推奨)
+mod_module_files = "warn"   # mod.rs スタイルを禁止 (2018+ style 強制)
+unwrap_used = "warn"        # .unwrap() は panic するので避ける
+expect_used = "warn"        # .expect() も同様
+todo = "warn"               # todo!() マクロ残し忘れ防止
+dbg_macro = "warn"          # dbg!() マクロ残し忘れ防止
+
+# pedantic に含まれるが実用上うるさい lint を個別に allow
+module_name_repetitions = "allow"   # foo::FooBar 命名を許可
+missing_errors_doc = "allow"        # /// # Errors セクション要求
+missing_panics_doc = "allow"        # /// # Panics セクション要求
+must_use_candidate = "allow"        # #[must_use] 推奨要求

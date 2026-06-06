@@ -1,0 +1,10 @@
+# プロジェクトで使う Rust toolchain を固定する。
+# このファイルがあるディレクトリ配下では、rustup が自動で指定バージョンに切り替える。
+# Node.js の .nvmrc / Python の .python-version と同じ役割。
+#
+# 開発者間 / CI でビルド環境を揃えるため、リポジトリにコミットするのが一般的。
+
+[toolchain]
+channel = "1.96.0"
+components = ["clippy", "rustfmt", "rust-analyzer"]
+profile = "default"
