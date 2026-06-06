@@ -28,6 +28,13 @@ default:
 run:
     cargo run
 
+# `-x run` は `cargo run` を実行する指示 (`-x` = execute)
+# `-c` は再ビルド前にターミナルをクリアして見やすくする
+
+# ファイル変更を検知して自動で再ビルド + 再起動 (要 cargo-watch)
+dev:
+    cargo watch -c -x run
+
 # ビルドのみ (実行はしない)
 build:
     cargo build
