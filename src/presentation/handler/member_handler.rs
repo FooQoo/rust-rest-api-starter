@@ -6,10 +6,8 @@ use axum::{
 use crate::{
     error::AppError,
     presentation::dto::{
-        request::member_search_request::MemberSearchRequest,
-        response::{
-            member_count_response::MemberCountResponse, member_list_response::MemberListResponse,
-        },
+        request::MemberSearchRequest,
+        response::{MemberCountResponse, MemberListResponse},
     },
     AppState,
 };

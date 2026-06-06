@@ -1,8 +1,6 @@
 use std::sync::Arc;
 
-use crate::domain::model::count::Count;
-use crate::domain::model::member::Member;
-use crate::domain::model::member_search_condition::MemberSearchCondition;
+use crate::domain::model::{Count, Member, MemberSearchCondition};
 use crate::domain::repository::member_repository::MemberRepository;
 
 // Java の MemberService.java 相当

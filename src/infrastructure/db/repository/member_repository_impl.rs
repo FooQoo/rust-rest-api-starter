@@ -3,10 +3,7 @@ use std::sync::Arc;
 use async_trait::async_trait;
 use sqlx::{QueryBuilder, SqlitePool};
 
-use crate::domain::model::company_position::CompanyPosition;
-use crate::domain::model::count::Count;
-use crate::domain::model::member::Member;
-use crate::domain::model::member_search_condition::MemberSearchCondition;
+use crate::domain::model::{CompanyPosition, Count, Member, MemberSearchCondition};
 use crate::domain::repository::member_repository::MemberRepository;
 use crate::infrastructure::db::entity::member_entity::MemberRow;
 
@@ -72,6 +69,7 @@ impl MemberRepository for SqliteMemberRepository {
             .fetch_one(self.pool.as_ref())
             .await?;
 
-        Ok(Count { value })
+        // Count::new でバリデーション (負数や u32::MAX 超過を弾く)
+        Count::new(value)
     }
 }

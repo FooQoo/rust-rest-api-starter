@@ -1,8 +1,6 @@
 use async_trait::async_trait;
 
-use crate::domain::model::count::Count;
-use crate::domain::model::member::Member;
-use crate::domain::model::member_search_condition::MemberSearchCondition;
+use crate::domain::model::{Count, Member, MemberSearchCondition};
 
 // Java の MemberRepository インターフェース相当
 //
