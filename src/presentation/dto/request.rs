@@ -15,7 +15,9 @@ pub struct MemberSearchRequest {
 }
 
 impl MemberSearchRequest {
-    // リクエスト DTO を消費してドメインの検索条件に変換
+    // リクエスト DTO を消費してドメインの検索条件に変換。
+    // #[must_use]: 変換結果を捨てると警告 (使い忘れ防止)
+    #[must_use]
     pub fn into_condition(self) -> MemberSearchCondition {
         MemberSearchCondition {
             name: Some(self.name),

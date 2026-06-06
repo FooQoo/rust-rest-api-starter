@@ -1,9 +1,10 @@
 use std::sync::Arc;
 
+use anyhow::Context;
 use async_trait::async_trait;
 use sqlx::{QueryBuilder, SqlitePool};
 
-use crate::domain::model::{CompanyPosition, Count, Member, MemberSearchCondition};
+use crate::domain::model::{Count, Member, MemberSearchCondition};
 use crate::domain::repository::member_repository::MemberRepository;
 use crate::infrastructure::db::entity::member_entity::MemberRow;
 
@@ -45,21 +46,12 @@ impl MemberRepository for SqliteMemberRepository {
             .build_query_as::<MemberRow>()
             // &*self.poolでも良い。デリファンス -> 借用
             .fetch_all(self.pool.as_ref())
-            .await?;
+            .await
+            .context("failed to query members")?;
 
-        // DB の行 (MemberRow) → ドメインモデル (Member) への変換
-        // Java の row.mapRow() 相当
-        let members = rows
-            .into_iter()
-            .map(|row| Member {
-                id: row.member_id,
-                name: row.name,
-                company_position: CompanyPosition {
-                    company_position_id: row.company_position_id,
-                    name: row.position_name,
-                },
-            })
-            .collect();
+        // 行 → ドメインモデル変換は From<MemberRow> for Member に集約済み。
+        // メソッドリファレンス Member::from でクロージャを省略できる。
+        let members = rows.into_iter().map(Member::from).collect();
 
         Ok(members)
     }
@@ -70,9 +62,10 @@ impl MemberRepository for SqliteMemberRepository {
         let (value,): (i64,) = sqlx::query_as("SELECT COUNT(*) FROM member")
             // &*self.poolでも良い。デリファンス -> 借用
             .fetch_one(self.pool.as_ref())
-            .await?;
+            .await
+            .context("failed to query member count")?;
 
         // Count::new でバリデーション (負数や u32::MAX 超過を弾く)
-        Count::new(value)
+        Count::new(value).context("invalid member count returned from database")
     }
 }

@@ -22,15 +22,21 @@ pub enum AppError {
 // axum がレスポンスに変換するための実装。
 // バリアントに応じて適切な HTTP ステータスとメッセージを返す。
 // 将来 NotFound 等のバリアントを足すなら、ここに match の腕を追加する。
+//
+// セキュリティ上のポイント:
+//   内部エラーの詳細 (SQL 構文、内部パス、スタック等) をそのままクライアントに
+//   返さない。詳細は tracing でサーバー側ログに残し、クライアントには
+//   抽象的なメッセージのみ返す。
 impl IntoResponse for AppError {
     fn into_response(self) -> Response {
-        let (status, message) = match &self {
+        let (status, public_message) = match &self {
             Self::Internal(err) => {
-                // 内部エラーはサーバー側で詳細をログに、クライアントには簡素なメッセージを
+                // 内部エラーの詳細はログに記録 (運用者が原因を追える)
                 tracing::error!(error = ?err, "internal error");
-                (StatusCode::INTERNAL_SERVER_ERROR, self.to_string())
+                // クライアントには抽象的なメッセージのみ返す
+                (StatusCode::INTERNAL_SERVER_ERROR, "internal server error")
             }
         };
-        (status, message).into_response()
+        (status, public_message).into_response()
     }
 }
