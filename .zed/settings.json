@@ -1,0 +1,39 @@
+{
+  // Zed エディタのプロジェクト固有設定
+  // チームで設定を共有するため、リポジトリにコミットする
+  // グローバル設定 (~/.config/zed/settings.json) より優先される
+
+  "languages": {
+    "Rust": {
+      // 保存時に rustfmt を自動実行
+      // rust-analyzer 経由で cargo fmt が呼ばれる
+      "format_on_save": "on"
+    }
+  },
+
+  "lsp": {
+    "rust-analyzer": {
+      "initialization_options": {
+        // 保存時のチェックコマンドを cargo check → cargo clippy に変更
+        // これで保存するたびに clippy 警告がエディタ上に表示される
+        "check": {
+          "command": "clippy"
+        },
+        // インレイヒント (型推論結果などをグレーで表示) を有効化
+        // Rust 学習中は型の流れを追いやすくなる
+        "inlayHints": {
+          "bindingModeHints": {
+            "enable": true
+          },
+          "closureReturnTypeHints": {
+            "enable": "always"
+          },
+          "lifetimeElisionHints": {
+            "enable": "skip_trivial",
+            "useParameterNames": true
+          }
+        }
+      }
+    }
+  }
+}
