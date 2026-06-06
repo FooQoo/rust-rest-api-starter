@@ -20,9 +20,9 @@ use presentation::handler::member_handler;
 //
 // Clone が必要な理由: axum はリクエストごとに State をクローンするため
 // Arc は参照カウントのみのクローンなので安価
-#[derive(Clone)]
-pub struct AppState {
-    pub member_service: Arc<MemberService>,
+#[derive(Debug, Clone)]
+pub(crate) struct AppState {
+    pub(crate) member_service: Arc<MemberService>,
 }
 
 // #[tokio::main] が main 関数を非同期ランタイム上で実行するエントリポイントにする

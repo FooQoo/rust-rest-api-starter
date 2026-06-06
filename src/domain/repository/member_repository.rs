@@ -12,8 +12,12 @@ use crate::domain::model::{Count, Member, MemberSearchCondition};
 // Send + Sync 境界:
 // tokio のマルチスレッドランタイムでは、スレッドをまたぐ可能性がある型に
 // Send + Sync が必要。Arc<dyn MemberRepository> として使うために付ける。
+// trait 境界に Debug を追加:
+// AppState や MemberService が #[derive(Debug)] するとき、
+// 内部の Arc<dyn MemberRepository> が Debug でないとビルドが通らない。
+// trait 自体に Debug 境界を要求しておけば、impl 側で derive(Debug) するだけで OK。
 #[async_trait]
-pub trait MemberRepository: Send + Sync {
+pub(crate) trait MemberRepository: Send + Sync + std::fmt::Debug {
     async fn search(&self, condition: MemberSearchCondition) -> anyhow::Result<Vec<Member>>;
     async fn count(&self) -> anyhow::Result<Count>;
 }

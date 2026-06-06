@@ -8,12 +8,13 @@ use crate::domain::repository::member_repository::MemberRepository;
 use crate::infrastructure::db::entity::member_entity::MemberRow;
 
 // Java の MemberRepositoryImpl.java 相当
-pub struct SqliteMemberRepository {
+#[derive(Debug)]
+pub(crate) struct SqliteMemberRepository {
     pool: Arc<SqlitePool>,
 }
 
 impl SqliteMemberRepository {
-    pub const fn new(pool: Arc<SqlitePool>) -> Self {
+    pub(crate) const fn new(pool: Arc<SqlitePool>) -> Self {
         Self { pool }
     }
 }
@@ -22,6 +23,7 @@ impl SqliteMemberRepository {
 impl MemberRepository for SqliteMemberRepository {
     // Java の MemberSearchSqlHelper を使った動的 SQL 構築に相当
     // QueryBuilder で WHERE 句を条件に応じて組み立てる
+    #[tracing::instrument(skip(self), err)]
     async fn search(&self, condition: MemberSearchCondition) -> anyhow::Result<Vec<Member>> {
         let mut qb: QueryBuilder<sqlx::Sqlite> = QueryBuilder::new(
             r"SELECT m.member_id, m.name, cp.company_position_id, cp.name AS position_name
@@ -62,6 +64,7 @@ impl MemberRepository for SqliteMemberRepository {
         Ok(members)
     }
 
+    #[tracing::instrument(skip(self), err)]
     async fn count(&self) -> anyhow::Result<Count> {
         // query_as でタプル型にマッピングする最もシンプルな COUNT 取得方法
         let (value,): (i64,) = sqlx::query_as("SELECT COUNT(*) FROM member")

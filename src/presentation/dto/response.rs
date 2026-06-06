@@ -5,11 +5,11 @@ use crate::domain::model::{Count, Member};
 // ─────────────────────────────────────────────
 // 1 件の社員レスポンス
 // ─────────────────────────────────────────────
-#[derive(Serialize)]
-pub struct MemberResponse {
-    pub id: i32,
-    pub name: String,
-    pub position_name: String,
+#[derive(Debug, Serialize)]
+pub(crate) struct MemberResponse {
+    pub(crate) id: i32,
+    pub(crate) name: String,
+    pub(crate) position_name: String,
 }
 
 impl From<Member> for MemberResponse {
@@ -25,9 +25,9 @@ impl From<Member> for MemberResponse {
 // ─────────────────────────────────────────────
 // 社員リストレスポンス
 // ─────────────────────────────────────────────
-#[derive(Serialize)]
-pub struct MemberListResponse {
-    pub members: Vec<MemberResponse>,
+#[derive(Debug, Serialize)]
+pub(crate) struct MemberListResponse {
+    pub(crate) members: Vec<MemberResponse>,
 }
 
 impl From<Vec<Member>> for MemberListResponse {
@@ -41,9 +41,9 @@ impl From<Vec<Member>> for MemberListResponse {
 // ─────────────────────────────────────────────
 // 社員数レスポンス
 // ─────────────────────────────────────────────
-#[derive(Serialize)]
-pub struct MemberCountResponse {
-    pub count: u32,
+#[derive(Debug, Serialize)]
+pub(crate) struct MemberCountResponse {
+    pub(crate) count: u32,
 }
 
 impl From<Count> for MemberCountResponse {
