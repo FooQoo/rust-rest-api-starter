@@ -34,6 +34,7 @@ pub async fn count(State(state): State<AppState>) -> Result<Json<MemberCountResp
 // Query(request): クエリパラメータを MemberSearchRequest にデシリアライズ
 //   ?name=John&company_position_id=1 → MemberSearchRequest { name: "John", ... }
 // name が欠けていると axum が自動で 422 Unprocessable Entity を返す
+// name が空文字/空白のみの場合は AppError::BadRequest として 400 を返す
 #[utoipa::path(
     get,
     path = "/v1/member/search",
@@ -41,6 +42,7 @@ pub async fn count(State(state): State<AppState>) -> Result<Json<MemberCountResp
     params(MemberSearchRequest),
     responses(
         (status = 200, description = "社員リスト", body = MemberListResponse),
+        (status = 400, description = "リクエストパラメータ不正"),
         (status = 422, description = "リクエストパラメータ不正"),
         (status = 500, description = "internal server error"),
     ),
@@ -52,7 +54,7 @@ pub async fn search(
 ) -> Result<Json<MemberListResponse>, AppError> {
     let members = state
         .member_service
-        .search(request.into_condition())
+        .search(request.into_condition()?)
         .await?;
     Ok(Json(MemberListResponse::from(members)))
 }

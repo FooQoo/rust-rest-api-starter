@@ -1,7 +1,7 @@
 use serde::Deserialize;
 use utoipa::IntoParams;
 
-use crate::domain::model::MemberSearchCondition;
+use crate::{domain::model::MemberSearchCondition, error::BadRequestError};
 
 // ─────────────────────────────────────────────
 // 社員検索リクエスト
@@ -19,12 +19,16 @@ pub struct MemberSearchRequest {
 
 impl MemberSearchRequest {
     // リクエスト DTO を消費してドメインの検索条件に変換。
-    // #[must_use]: 変換結果を捨てると警告 (使い忘れ防止)
-    #[must_use]
-    pub fn into_condition(self) -> MemberSearchCondition {
-        MemberSearchCondition {
+    pub fn into_condition(self) -> Result<MemberSearchCondition, BadRequestError> {
+        if self.name.trim().is_empty() {
+            return Err(BadRequestError::new(anyhow::anyhow!(
+                "name must not be blank"
+            )));
+        }
+
+        Ok(MemberSearchCondition {
             name: Some(self.name),
             company_position_id: self.company_position_id,
-        }
+        })
     }
 }

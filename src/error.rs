@@ -17,6 +17,18 @@ pub enum AppError {
     // ? 演算子で anyhow::Error → AppError へ変換される
     #[error("internal error: {0}")]
     Internal(#[from] anyhow::Error),
+    #[error("bad request: {0}")]
+    BadRequest(#[from] BadRequestError),
+}
+
+#[derive(Debug, Error)]
+#[error("{0}")]
+pub struct BadRequestError(anyhow::Error);
+
+impl BadRequestError {
+    pub fn new(error: impl Into<anyhow::Error>) -> Self {
+        Self(error.into())
+    }
 }
 
 // axum がレスポンスに変換するための実装。
@@ -35,6 +47,12 @@ impl IntoResponse for AppError {
                 tracing::error!(error = ?err, "internal error");
                 // クライアントには抽象的なメッセージのみ返す
                 (StatusCode::INTERNAL_SERVER_ERROR, "internal server error")
+            }
+            Self::BadRequest(err) => {
+                // リクエストパラメータの不正はログに記録 (運用者が原因を追える)
+                tracing::error!(error = ?err, "bad request");
+                // クライアントには抽象的なメッセージのみ返す
+                (StatusCode::BAD_REQUEST, "bad request")
             }
         };
         (status, public_message).into_response()
